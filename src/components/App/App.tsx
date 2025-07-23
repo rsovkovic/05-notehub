@@ -3,13 +3,13 @@ import { useDebouncedCallback } from "use-debounce";
 import {
   useQuery,
   keepPreviousData,
-  useMutation,
-  useQueryClient,
+  // useMutation,
+  // useQueryClient,
 } from "@tanstack/react-query";
 import css from "./App.module.css";
 import NoteList from "../NoteList/NoteList";
 import SearchBox from "../SearchBox/SearchBox";
-import { fetchNotes, deleteNote } from "../../services/noteService";
+import { fetchNotes } from "../../services/noteService";
 import Pagination from "../Pagination/Pagination";
 import NoteForm from "../NoteForm/NoteForm";
 import Modal from "../Modal/Modal";
@@ -31,17 +31,20 @@ export default function App() {
     (value: string) => setSearchQuery(value),
     300
   );
-
-  const queryClient = useQueryClient();
-  const deleteMutation = useMutation<void, Error, number>({
-    mutationFn: (id: number) => deleteNote(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notes"] });
-    },
-  });
-  const handleDelete = (id: number) => {
-    deleteMutation.mutate(id);
+  const handleSearchChange = (value: string) => {
+    setCurrentPage(1);
+    updateSearchQuery(value);
   };
+  // const queryClient = useQueryClient();
+  // const deleteMutation = useMutation<void, Error, number>({
+  //   mutationFn: (id: number) => deleteNote(id),
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: ["notes"] });
+  //   },
+  // });
+  // const handleDelete = (id: number) => {
+  //   deleteMutation.mutate(id);
+  // };
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleOpen = () => setIsModalOpen(true);
@@ -51,7 +54,7 @@ export default function App() {
   return (
     <div className={css.app}>
       <header className={css.toolbar}>
-        <SearchBox value={searchQuery} onChange={updateSearchQuery} />
+        <SearchBox value={searchQuery} onChange={handleSearchChange} />
 
         {isSuccess && totalPages > 1 && (
           <Pagination
@@ -72,9 +75,7 @@ export default function App() {
       {isLoading && <Loader />}
       {isError && <ErrorMessage />}
       {isSuccess && data.notes.length === 0 && <EmptyMessage />}
-      {isSuccess && data.notes.length > 0 && (
-        <NoteList notes={data.notes} onDelete={handleDelete} />
-      )}
+      {isSuccess && data.notes.length > 0 && <NoteList notes={data.notes} />}
     </div>
   );
 }

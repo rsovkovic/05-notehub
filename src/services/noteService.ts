@@ -53,10 +53,14 @@ export const createNote = async ({
   );
   return response.data;
 };
-export const deleteNote = async (id: number): Promise<void> => {
-  await axios.delete(`https://notehub-public.goit.study/api/notes/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+export const deleteNote = async (id: number): Promise<Note> => {
+  const response = await axios.delete<Note>(
+    `https://notehub-public.goit.study/api/notes/${id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
 };
