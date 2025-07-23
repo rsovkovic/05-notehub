@@ -15,7 +15,7 @@ import NoteForm from "../NoteForm/NoteForm";
 import Modal from "../Modal/Modal";
 import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
-import EmptyState from "../Empty/EmptyState";
+import EmptyMessage from "../Empty/EmptyMessage";
 
 export default function App() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -71,7 +71,7 @@ export default function App() {
       </header>
       {isLoading && <Loader />}
       {isError && <ErrorMessage />}
-      {isSuccess && data.notes.length === 0 && <EmptyState />}
+      {isSuccess && data.notes.length === 0 && <EmptyMessage />}
       {isSuccess && data.notes.length > 0 && (
         <NoteList notes={data.notes} onDelete={handleDelete} />
       )}
