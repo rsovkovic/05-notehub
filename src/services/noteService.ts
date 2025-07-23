@@ -1,0 +1,62 @@
+import axios from "axios";
+import { Note } from "../types/note";
+
+interface FetchNotesParams {
+  page: number;
+  perPage: number;
+  search?: string;
+}
+interface FetchNotesResponse {
+  notes: Note[];
+  totalPages: number;
+  //   total: number;
+  //   page: number;
+  //   perPage: number;
+}
+export interface CreateNoteProps {
+  title: string;
+  content: string;
+  tag: string;
+}
+const token = import.meta.env.VITE_NOTEHUB_TOKEN;
+export const fetchNotes = async ({
+  page,
+  perPage,
+  search,
+}: FetchNotesParams): Promise<FetchNotesResponse> => {
+  const response = await axios.get<FetchNotesResponse>(
+    "https://notehub-public.goit.study/api/notes",
+    {
+      params: { page, perPage, ...(search ? { search } : {}) },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
+
+export const createNote = async ({
+  title,
+  content,
+  tag,
+}: CreateNoteProps): Promise<Note> => {
+  const response = await axios.post<Note>(
+    "https://notehub-public.goit.study/api/notes",
+
+    { title, content, tag },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
+export const deleteNote = async (id: number): Promise<void> => {
+  await axios.delete(`https://notehub-public.goit.study/api/notes/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
